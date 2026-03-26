@@ -1,0 +1,403 @@
+{
+	"info": {
+		"_postman_id": "59a17126-ae9a-4f4c-9a1e-7a4dbc7868ed",
+		"name": "QA76mPhonebook",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Login registered user",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a2c82f5d-0254-4af5-93a2-c13f1b14f0b7",
+										"exec": [
+											"",
+											"var jsonData = pm.response.json();",
+											"pm.environment.set(\"token\",jsonData.token);"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "4471528e-a514-407a-b509-bbc2891c53ef",
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "449d3b59-cb51-4fcd-ae84-e2c9671f4596",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"kristitomash@gmail.com\",\n  \"password\": \"Aa12345!\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/v1/user/login/usernamepassword"
+							},
+							"response": []
+						}
+					],
+					"id": "8e1744b1-1442-4d55-9d41-c498ac1ade29",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e5818831-263b-4c6b-bf45-2915c107fa84",
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6e06459b-38ad-4c7a-9d99-96dfd15b27c5",
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code name has string: OK\", function () {",
+									"    pm.response.to.have.status(\"OK\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [],
+					"id": "78f39eda-e891-43b8-8d63-2ca941dae4a8"
+				}
+			],
+			"id": "d4b9988e-47f5-4850-ac35-90373f1d5960"
+		},
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "Positive",
+					"item": [
+						{
+							"name": "Get all contacts before add",
+							"id": "7c4b0cd8-5b93-4162-adc2-386719225abc",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{URL}}/v1/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "Add contact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "818482a2-0b1d-4de0-a34d-2707d47d1d31",
+										"exec": [
+											"pm.test(\"Body matches string: Contact was added!\", function () {",
+											"    pm.expect(pm.response.text()).to.include(\"Contact was added!\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "938f975e-63d0-4a8e-889a-68ed189a0fb7",
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "69e08a38-370d-4718-8207-09d98950eb9d",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Lora\",\n  \"lastName\": \"Hasky\",\n  \"email\": \"Test@gmail.com\",\n  \"phone\": \"47264003326066\",\n  \"address\": \"TelAviv\",\n  \"description\": \"QA\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/v1/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "Get all contacts after add",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1458e015-aa2f-428c-b8a6-5c8a19a3023d",
+										"exec": [
+											"let response = pm.response.json();",
+											"//take first element of the contact array",
+											"let contactId = response.contacts[0].id;",
+											"//save in environment",
+											"pm.environment.set(\"id\",contactId);",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "c579844a-fa4d-4519-ac15-fa1a59db1bd8",
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "d9a1de98-c300-4e4a-9fcb-c87aef61d0aa",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{URL}}/v1/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "Modify contact",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "818482a2-0b1d-4de0-a34d-2707d47d1d31",
+										"exec": [
+											"",
+											"pm.test(\"API message:Contact was updated\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql(\"Contact was updated\");",
+											"});",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "938f975e-63d0-4a8e-889a-68ed189a0fb7",
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								}
+							],
+							"id": "fc36cccb-f2fb-4062-937e-6b433a5b0906",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"{{id}}\",\n  \"name\": \"Lora\",\n  \"lastName\": \"Hasky\",\n  \"email\": \"Test@gmail.com\",\n  \"phone\": \"47264003326066\",\n  \"address\": \"Rishon-Lezion\",\n  \"description\": \"QA\"\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{URL}}/v1/contacts"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete contact By ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a212a390-a805-448e-85f2-5c764acc8fb7",
+										"exec": [
+											"pm.test(\"API message: Contact was deleted!\", function () {",
+											"    var jsonData = pm.response.json();",
+											"    pm.expect(jsonData.message).to.eql( \"Contact was deleted!\");",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {},
+										"requests": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "1a72159d-2f6f-433f-b7ae-096158dcc73f",
+										"exec": [],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"id": "ee59dcc7-6b89-4aee-a469-490fbb8c5e17",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "{{token}}",
+										"type": "text"
+									}
+								],
+								"url": "{{URL}}/v1/contacts/{{id}}"
+							},
+							"response": []
+						}
+					],
+					"id": "22a99872-66f4-4385-b41a-2579ad758d78",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "80722fdb-a5fe-4f6d-8251-cb4852e63b2b",
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "4cd925df-b8b3-45d3-b9f9-7e1006c3f1b8",
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {},
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code name has string: OK\", function () {",
+									"    pm.response.to.have.status(\"OK\");",
+									"});"
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [],
+					"id": "b3d0d4d7-b00e-4b59-8fe0-83646550300a"
+				}
+			],
+			"id": "63be71e1-542e-4cbf-a712-e12b45a36c08"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a0d36af5-f46e-4a40-9801-f6568c05dd8e",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "768c83e3-8095-403f-a6bd-9f5b03b70bc5",
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					"pm.test(\"Response time is less than 2000ms\", function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});"
+				]
+			}
+		}
+	]
+}
